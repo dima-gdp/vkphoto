@@ -1,0 +1,36 @@
+.header {
+	padding: 20px 0;
+	background-color: burlywood;
+	// .header__container
+	&__container {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+	}
+	// .header__logo
+	&__logo {
+	}
+	// .header__nav
+	&__nav {
+		margin-right: 40px;
+		margin-left: auto;
+		ul {
+			display: flex;
+			align-items: center;
+			li {
+				&:not(:last-child) {
+					margin-right: 15px;
+				}
+				a {
+					color: #000;
+					&.router-link-exact-active {
+						color: blueviolet;
+					}
+				}
+			}
+		}
+	}
+	// .header__logout
+	&__logout {
+	}
+}
