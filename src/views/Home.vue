@@ -61,7 +61,7 @@
 import { getFullName } from '../helpers/utils'
 import { fetchInitialPhotos, fetchMorePhotos } from '../helpers/api'
 import Loader from '../components/Loader.vue'
-import LoadMorePhotos from '../helpers/loadMorePhotos'
+import {subscribeToLoadPhotos, unsubscribeToLoadPhotos} from '../helpers/loadMorePhotos'
 import messages from '../helpers/messages'
 import {mapGetters} from 'vuex'
 
@@ -106,6 +106,7 @@ export default {
   },
   methods: {
     async getNextPhotos () {
+
       this.moreLoading = true
       if (!this.canLoadPhotos) {
         this.moreLoading = false
@@ -139,12 +140,14 @@ export default {
       const initialPhotos = await fetchInitialPhotos()
       this.start_from = initialPhotos.next_from
       this.photosData = initialPhotos
-      const loadMorePhotos = new LoadMorePhotos(this.getNextPhotos, 300)
-      loadMorePhotos.subscribe()
+      subscribeToLoadPhotos(this.getNextPhotos, 300, 300)
     } catch (e) {
       this.$error(messages[e.error_code] || 'Ошибка(')
     }
     this.loading = false
+  },
+  beforeDestroy () {
+    unsubscribeToLoadPhotos()
   }
 }
 </script>

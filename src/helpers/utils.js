@@ -19,16 +19,3 @@ export function debounce(f, ms) {
     setTimeout(() => isCooldown = false, ms);
   };
 }
-
-
-
-
-// let timeout
-// return function (...args) {
-//   const later = () => {
-//     clearTimeout(timeout)
-//     fn.apply(this, args)
-//   }
-//   clearTimeout(timeout)
-//   timeout = setTimeout(later, wait)
-// }

@@ -5,7 +5,7 @@
       <div class="single-photo__error" v-if="error">
         Ошибка
       </div>
-      <div class="single-photo__content" v-if="!error">
+      <div class="single-photo__content" v-if="photoData && user">
         <div class="single-photo__image">
           <img :src="photoData.photo_807 || photoData.photo_604" alt="" />
         </div>
