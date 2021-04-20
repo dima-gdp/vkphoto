@@ -3,10 +3,10 @@
     <section class="newsfeed">
       <div class="newsfeed__container container">
         <Loader v-if="loading" />
-        <ul class="photos-grid" v-if="filteredPhotos.length">
+        <ul class="photos-grid" v-if="getFilteredPhotosData.length">
           <li
             class="photos-grid__column"
-            v-for="photo in filteredPhotos"
+            v-for="photo in getFilteredPhotosData"
             :key="photo.id"
           >
             <router-link
@@ -73,19 +73,19 @@ export default {
   components: { Loader },
   data() {
     return {
-      photosData: {
-        items: [],
-        profiles: [],
-      },
-      fData: [],
-      start_from: null,
-      canLoadPhotos: true,
+      // photosData: {
+      //   items: [],
+      //   profiles: [],
+      // },
+      // fData: [],
+      // start_from: null,
+      // canLoadPhotos: true,
       loading: false,
       moreLoading: false,
     };
   },
   computed: {
-    ...mapGetters(["getError"]),
+    ...mapGetters(['getPhotosData', 'getFilteredPhotosData']),
     filteredPhotos() {
       return this.fData;
       // let returnedArray = [];
@@ -111,7 +111,7 @@ export default {
     },
   },
   watch: {
-    photosData(data) {
+    getPhotosData(data) {
       let returnedArray = [];
       data.items
         .map((el) => el.photos.items)
@@ -128,7 +128,7 @@ export default {
           user_photo_50: profile.photo_50,
         };
       });
-      this.fData = returnedArray;
+      this.$store.commit('setFilteredPhotosData', returnedArray)
     },
   },
   methods: {
@@ -138,37 +138,24 @@ export default {
     },
     async getNextPhotos() {
       this.moreLoading = true;
-      if (!this.canLoadPhotos) {
+
+      if (!this.$store.state.canLoadPhotos) {
         this.moreLoading = false;
         return;
       }
+
       try {
-        const morePhotos = await fetchMorePhotos(this.start_from);
-        if (!morePhotos.next_from || morePhotos.next_from === this.start_from) {
-          this.canLoadPhotos = false;
-          this.moreLoading = false;
-          this.$message("Лента фотографий закончилась");
-          return;
-        }
-        this.start_from = morePhotos.next_from;
-        this.photosData = {
-          items: [...this.photosData.items, ...morePhotos.items],
-          profiles: [...this.photosData.profiles, ...morePhotos.profiles],
-        };
+        await this.$store.dispatch('getNextPhotos', this.$store.state.start_from)
       } catch (e) {
-        this.canLoadPhotos = false;
         this.$error(messages[e.error_code] || "Ошибка(");
       }
-
       this.moreLoading = false;
     },
   },
   async mounted() {
     this.loading = true;
     try {
-      const initialPhotos = await fetchInitialPhotos();
-      this.start_from = initialPhotos.next_from;
-      this.photosData = initialPhotos;
+      await this.$store.dispatch('getInitialPhotos')
       subscribeToLoadPhotos(this.getNextPhotos, 300, 300);
     } catch (e) {
       this.$error(messages[e.error_code] || "Ошибка(");
