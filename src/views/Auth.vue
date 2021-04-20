@@ -22,6 +22,7 @@ export default {
       try {
         const auth = await login();
         this.$message("Вы успешно авторизировались");
+        this.$router.push({ name: "Home" });
       } catch (e) {
         console.log("error", e);
       }

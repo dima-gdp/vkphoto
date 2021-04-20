@@ -21,6 +21,7 @@
           <div class="single-photo__likes likes">
             <span class="likes__count">{{ photoData.likes.count }}</span>
             <button
+              @click="like(photoData.id)"
               class="likes__btn"
               :class="{
                 'likes__btn--red': photoData.likes.user_likes,
@@ -68,6 +69,11 @@ export default {
     ...mapMutations(["setBodyOffsetTop"]),
     goToNewsfeed() {
       this.$router.push({ name: "Home" });
+    },
+    like(id) {
+      this.photoData.likes.user_likes = !this.photoData.likes.user_likes;
+      this.$emit("onlike", id);
+      console.log(id);
     },
   },
   async created() {

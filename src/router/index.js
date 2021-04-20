@@ -1,6 +1,5 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import { fetchLoginStatus } from "../helpers/api";
 
 Vue.use(VueRouter)
 

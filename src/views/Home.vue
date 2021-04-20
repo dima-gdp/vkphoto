@@ -2,8 +2,8 @@
   <div class="home">
     <section class="newsfeed">
       <div class="newsfeed__container container">
-        <Loader v-if="loading"/>
-        <ul class="photos-grid" v-else>
+        <Loader v-if="loading" />
+        <ul class="photos-grid" v-if="filteredPhotos.length">
           <li
             class="photos-grid__column"
             v-for="photo in filteredPhotos"
@@ -16,11 +16,13 @@
                 query: { uid: photo.owner_id, pid: photo.id },
               }"
             >
-              <img :src="photo.photo_604" alt="" class="photos-item__image"/>
+              <img :src="photo.photo_604" alt="" class="photos-item__image" />
               <div class="photos-item__descr descr-photos">
                 <div class="descr-photos__top">
                   <div class="descr-photos__likes likes">
                     <button
+                      @click.prevent="like(photo.id)"
+                      @onlike="like(photo.id)"
                       class="likes__btn"
                       :class="{
                         'likes__btn--red': photo.likes.user_likes,
@@ -41,113 +43,140 @@
                       />
                     </div>
                     <span class="owner__name owner__name--white">{{
-                        photo.user_full_name
-                      }}</span>
+                      photo.user_full_name
+                    }}</span>
                   </div>
                 </div>
               </div>
             </router-link>
           </li>
         </ul>
-        <Loader v-if="moreLoading"/>
-        <button @click="getNextPhotos">fwef</button>
+        <Loader v-if="moreLoading" />
       </div>
     </section>
-    <router-view/>
+    <router-view />
   </div>
 </template>
 
 <script>
-import { getFullName } from '../helpers/utils'
-import { fetchInitialPhotos, fetchMorePhotos } from '../helpers/api'
-import Loader from '../components/Loader.vue'
-import {subscribeToLoadPhotos, unsubscribeToLoadPhotos} from '../helpers/loadMorePhotos'
-import messages from '../helpers/messages'
-import {mapGetters} from 'vuex'
+import { getFullName } from "../helpers/utils";
+import { fetchInitialPhotos, fetchMorePhotos } from "../helpers/api";
+import Loader from "../components/Loader.vue";
+import {
+  subscribeToLoadPhotos,
+  unsubscribeToLoadPhotos,
+} from "../helpers/loadMorePhotos";
+import messages from "../helpers/messages";
+import { mapGetters } from "vuex";
 
 export default {
   components: { Loader },
-  data () {
+  data() {
     return {
       photosData: {
         items: [],
-        profiles: []
+        profiles: [],
       },
+      fData: [],
       start_from: null,
       canLoadPhotos: true,
       loading: false,
-      moreLoading: false
-    }
+      moreLoading: false,
+    };
   },
   computed: {
-    ...mapGetters(['getError']),
-    filteredPhotos () {
-      let returnedArray = []
+    ...mapGetters(["getError"]),
+    filteredPhotos() {
+      return this.fData;
+      // let returnedArray = [];
 
-      this.photosData.items
-        .map(el => el.photos.items)
-        .forEach(el => {
-          el.forEach(item => returnedArray.push(item))
-        })
+      // this.photosData.items
+      //   .map((el) => el.photos.items)
+      //   .forEach((el) => {
+      //     el.forEach((item) => returnedArray.push(item));
+      //   });
 
-      returnedArray = returnedArray.map(el => {
-        const profile = this.photosData.profiles.find(
-          user => user.id === el.owner_id
-        )
+      // returnedArray = returnedArray.map((el) => {
+      //   const profile = this.photosData.profiles.find(
+      //     (user) => user.id === el.owner_id
+      //   );
+      //   return {
+      //     ...el,
+      //     user_full_name: getFullName(profile.first_name, profile.last_name),
+      //     user_photo_100: profile.photo_100,
+      //     user_photo_50: profile.photo_50,
+      //   };
+      // });
+      // return returnedArray;
+    },
+  },
+  watch: {
+    photosData(data) {
+      let returnedArray = [];
+      data.items
+        .map((el) => el.photos.items)
+        .forEach((el) => {
+          el.forEach((item) => returnedArray.push(item));
+        });
+
+      returnedArray = returnedArray.map((el) => {
+        const profile = data.profiles.find((user) => user.id === el.owner_id);
         return {
           ...el,
           user_full_name: getFullName(profile.first_name, profile.last_name),
           user_photo_100: profile.photo_100,
-          user_photo_50: profile.photo_50
-        }
-      })
-      return returnedArray
-    }
-  },
-  methods: {
-    async getNextPhotos () {
-
-      this.moreLoading = true
-      if (!this.canLoadPhotos) {
-        this.moreLoading = false
-        return
-      }
-      try {
-        const morePhotos = await fetchMorePhotos(this.start_from)
-        if (!morePhotos.next_from || morePhotos.next_from === this.start_from) {
-          this.canLoadPhotos = false
-          this.moreLoading = false
-          this.$message('Лента фотографий закончилась')
-          return
-        }
-        this.start_from = morePhotos.next_from
-        this.photosData = {
-          items: [...this.photosData.items, ...morePhotos.items],
-          profiles: [...this.photosData.profiles, ...morePhotos.profiles]
-        }
-      } catch (e) {
-        this.canLoadPhotos = false
-        this.$error(messages[e.error_code] || 'Ошибка(')
-
-      }
-
-      this.moreLoading = false
+          user_photo_50: profile.photo_50,
+        };
+      });
+      this.fData = returnedArray;
     },
   },
-  async mounted () {
-    this.loading = true
-    try {
-      const initialPhotos = await fetchInitialPhotos()
-      this.start_from = initialPhotos.next_from
-      this.photosData = initialPhotos
-      subscribeToLoadPhotos(this.getNextPhotos, 300, 300)
-    } catch (e) {
-      this.$error(messages[e.error_code] || 'Ошибка(')
-    }
-    this.loading = false
+  methods: {
+    like(id) {
+      const photo = this.fData.find((el) => el.id === id);
+      photo.likes.user_likes = !photo.likes.user_likes;
+    },
+    async getNextPhotos() {
+      this.moreLoading = true;
+      if (!this.canLoadPhotos) {
+        this.moreLoading = false;
+        return;
+      }
+      try {
+        const morePhotos = await fetchMorePhotos(this.start_from);
+        if (!morePhotos.next_from || morePhotos.next_from === this.start_from) {
+          this.canLoadPhotos = false;
+          this.moreLoading = false;
+          this.$message("Лента фотографий закончилась");
+          return;
+        }
+        this.start_from = morePhotos.next_from;
+        this.photosData = {
+          items: [...this.photosData.items, ...morePhotos.items],
+          profiles: [...this.photosData.profiles, ...morePhotos.profiles],
+        };
+      } catch (e) {
+        this.canLoadPhotos = false;
+        this.$error(messages[e.error_code] || "Ошибка(");
+      }
+
+      this.moreLoading = false;
+    },
   },
-  beforeDestroy () {
-    unsubscribeToLoadPhotos()
-  }
-}
+  async mounted() {
+    this.loading = true;
+    try {
+      const initialPhotos = await fetchInitialPhotos();
+      this.start_from = initialPhotos.next_from;
+      this.photosData = initialPhotos;
+      subscribeToLoadPhotos(this.getNextPhotos, 300, 300);
+    } catch (e) {
+      this.$error(messages[e.error_code] || "Ошибка(");
+    }
+    this.loading = false;
+  },
+  beforeDestroy() {
+    unsubscribeToLoadPhotos();
+  },
+};
 </script>
