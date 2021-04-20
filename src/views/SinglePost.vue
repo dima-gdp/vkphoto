@@ -1,10 +1,12 @@
 <template>
   <section class="single-photo">
     <Loader v-if="loading" />
-    <div class="single-photo__container" v-if="!loading" @click.self="goToNewsfeed">
-      <div class="single-photo__error" v-if="error">
-        Ошибка
-      </div>
+    <div
+      class="single-photo__container"
+      v-if="!loading"
+      @click.self="goToNewsfeed"
+    >
+      <div class="single-photo__error" v-if="error">Ошибка</div>
       <div class="single-photo__content" v-if="photoData && user">
         <div class="single-photo__image">
           <img :src="photoData.photo_807 || photoData.photo_604" alt="" />
@@ -41,10 +43,11 @@
 </template>
 
 <script>
-import { mapGetters, mapMutations } from 'vuex'
-import { getFullName} from '../helpers/utils'
-import { fetchSinglePhoto, fetchUser } from '../helpers/api'
-import messages from '../helpers/messages'
+import { mapGetters, mapMutations } from "vuex";
+import { getFullName } from "../helpers/utils";
+import { setBodyStyles, restoreBodyStyles } from "../helpers/body.styles";
+import { fetchSinglePhoto, fetchUser } from "../helpers/api";
+import messages from "../helpers/messages";
 
 export default {
   data() {
@@ -52,51 +55,50 @@ export default {
       loading: false,
       photoData: null,
       user: null,
-      error: false
-    }
+      error: false,
+    };
   },
   computed: {
-    ...mapGetters(['getError']),
+    ...mapGetters(["getError"]),
     userFullName() {
-      return getFullName(this.user.first_name, this.user.last_name)
-    }
+      return getFullName(this.user.first_name, this.user.last_name);
+    },
   },
   methods: {
-    ...mapMutations(['setBodyOffsetTop']),
+    ...mapMutations(["setBodyOffsetTop"]),
     goToNewsfeed() {
-      this.$router.push({ name: 'Home' })
-    }
+      this.$router.push({ name: "Home" });
+    },
   },
   async created() {
-    this.loading = true
-    const photoId = `${this.$route.query.uid}_${this.$route.query.pid}`
-    try {
-      const singlePhoto = await fetchSinglePhoto(photoId)
-      this.photoData = singlePhoto
-      const user = await fetchUser(this.$route.query.uid)
-      this.user = user
-    } catch (e) {
-      this.error = true
-      this.$error(messages[e.error_code] || 'Ошибка(')
+    this.loading = true;
+    const uid = this.$route.query.uid;
+    const pid = this.$route.query.pid;
+    if (!uid && !pid) {
+      this.loading = false;
+      this.error = true;
+      this.$error("Неправильная ссылка");
+      return;
     }
 
-    let paddingOffset = window.innerWidth - document.body.offsetWidth + 'px'
-    document.body.style.paddingRight = paddingOffset
-
-    this.setBodyOffsetTop(window.scrollY)
-    document.body.classList.add('disable-scroll')
-    document.body.style.top = -this.$store.state.bodyOffsetTop + 'px'
-
-    this.loading = false
+    const photoId = `${uid}_${pid}`;
+    try {
+      const singlePhoto = await fetchSinglePhoto(photoId);
+      this.photoData = singlePhoto;
+      const user = await fetchUser(this.$route.query.uid);
+      this.user = user;
+    } catch (e) {
+      this.error = true;
+      this.$error(messages[e.error_code] || "Ошибка(");
+    }
+    setBodyStyles();
+    this.loading = false;
   },
 
   beforeDestroy() {
-    document.body.classList.remove('disable-scroll')
-    window.scroll({ top: this.$store.state.bodyOffsetTop })
-    document.body.style.top = 'auto'
-    document.body.style.paddingRight = ''
-  }
-}
+    restoreBodyStyles();
+  },
+};
 </script>
 
 <style scoped>

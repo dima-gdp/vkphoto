@@ -14,22 +14,39 @@
           </li>
         </ul>
       </nav>
-      <button class="header__logout" @click="logout">Выйти</button>
+      <button class="header__logout" @click="vklogout">Выйти</button>
     </div>
   </div>
 </template>
 
 <script>
+import { logout } from "../helpers/api";
+
 export default {
+  data() {
+    return {};
+  },
   methods: {
-    logout() {
-      VK.Auth.logout((r) => {
-        console.log(r);
-        if (this.$route.name !== 'Auth') {
-          this.$router.push({ name: 'Auth' });
-        }
-      });
+    async vklogout() {
+      try {
+        await logout();
+        this.$message("Вы вышли из приложения");
+      } catch (e) {
+        this.$message("Вы уже вышли)");
+      }
+      this.canLogout = false;
+      if (this.$route.name !== "Auth") {
+        this.$router.push({ name: "Auth" });
+      }
     },
+    // logout() {
+    //   VK.Auth.logout((r) => {
+    //     console.log(r);
+    //     if (this.$route.name !== "Auth") {
+    //       this.$router.push({ name: "Auth" });
+    //     }
+    //   });
+    // },
   },
 };
 </script>

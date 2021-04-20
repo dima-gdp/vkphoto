@@ -1,3 +1,32 @@
+export function fetchLoginStatus() {
+  return new Promise((resolve) => {
+    VK.Auth.getLoginStatus((r) => {
+      resolve(r.status)
+    })
+  })
+}
+
+export function logout() {
+  return new Promise((resolve, reject) => {
+    VK.Auth.logout((r) => {
+      if (r) {
+        resolve()
+      }
+      console.log('logout', r);
+    });
+    reject(e)
+  })
+}
+
+export function login() {
+  return new Promise((resolve, reject) => {
+    VK.Auth.login(r => {
+      console.log('login', r);
+      resolve(r)
+    }, 8192 + 2)
+  })
+}
+
 export function fetchInitialPhotos() {
   return new Promise((resolve, reject) => {
     VK.Api.call(
