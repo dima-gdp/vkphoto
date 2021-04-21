@@ -17,30 +17,34 @@ export default new Vuex.Store({
 
   },
   mutations: {
-    setPhotosData(state, {photosData, start_from}){
-      state.photosData =  photosData
+    setPhotosData(state, { photosData, start_from }) {
+      state.photosData = photosData
       state.start_from = start_from
     },
-    setCanLoadPhotos(state, boolean){
+    setCanLoadPhotos(state, boolean) {
       state.canLoadPhotos = boolean
     },
-    setFilteredPhotosData(state, filteredData){
+    setFilteredPhotosData(state, filteredData) {
       state.filteredPhotosData = filteredData
+    },
+    setLike(state, id) {
+      const photo = state.filteredPhotosData.find((el) => el.id === id);
+      photo.likes.user_likes = !photo.likes.user_likes;
     }
   },
   actions: {
-    async getInitialPhotos({commit}){
+    async getInitialPhotos({ commit }) {
       try {
         const initialPhotos = await fetchInitialPhotos();
         commit('setPhotosData', {
           photosData: initialPhotos,
           start_from: initialPhotos.next_from
         })
-      } catch (e){
+      } catch (e) {
         throw e
       }
     },
-    async getNextPhotos({commit, state}) {
+    async getNextPhotos({ commit, state }) {
       try {
         const morePhotos = await fetchMorePhotos(state.start_from);
         if (!morePhotos.next_from || morePhotos.next_from === state.start_from) {
@@ -65,6 +69,7 @@ export default new Vuex.Store({
   getters: {
     getPhotosData: state => state.photosData,
     getFilteredPhotosData: state => state.filteredPhotosData,
+    canLoadPhotos: state => state.canLoadPhotos,
   },
   modules: {
   }

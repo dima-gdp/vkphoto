@@ -44,11 +44,11 @@
 </template>
 
 <script>
-import { mapGetters, mapMutations } from "vuex";
-import { getFullName } from "../helpers/utils";
-import { setBodyStyles, restoreBodyStyles } from "../helpers/body.styles";
-import { fetchSinglePhoto, fetchUser } from "../helpers/api";
-import messages from "../helpers/messages";
+import { mapGetters, mapMutations } from 'vuex'
+import { getFullName } from '../helpers/utils'
+import { setBodyStyles, restoreBodyStyles } from '../helpers/body.styles'
+import { fetchSinglePhoto, fetchUser } from '../helpers/api'
+import messages from '../helpers/messages'
 
 export default {
   data() {
@@ -56,55 +56,53 @@ export default {
       loading: false,
       photoData: null,
       user: null,
-      error: false,
-    };
+      error: false
+    }
   },
   computed: {
-    ...mapGetters(["getError"]),
     userFullName() {
-      return getFullName(this.user.first_name, this.user.last_name);
-    },
+      return getFullName(this.user.first_name, this.user.last_name)
+    }
   },
   methods: {
-    ...mapMutations(["setBodyOffsetTop"]),
+    ...mapMutations(['setBodyOffsetTop']),
     goToNewsfeed() {
-      this.$router.push({ name: "Home" });
+      this.$router.push({ name: 'Home' })
     },
     like(id) {
-      this.photoData.likes.user_likes = !this.photoData.likes.user_likes;
-      this.$emit("onlike", id);
-      console.log(id);
-    },
+      this.photoData.likes.user_likes = !this.photoData.likes.user_likes
+      this.$store.commit('setLike', id)
+    }
   },
   async created() {
-    this.loading = true;
-    const uid = this.$route.query.uid;
-    const pid = this.$route.query.pid;
+    this.loading = true
+    const uid = this.$route.query.uid
+    const pid = this.$route.query.pid
     if (!uid && !pid) {
-      this.loading = false;
-      this.error = true;
-      this.$error("Неправильная ссылка");
-      return;
+      this.loading = false
+      this.error = true
+      this.$error('Неправильная ссылка')
+      return
     }
 
-    const photoId = `${uid}_${pid}`;
+    const photoId = `${uid}_${pid}`
     try {
-      const singlePhoto = await fetchSinglePhoto(photoId);
-      this.photoData = singlePhoto;
-      const user = await fetchUser(this.$route.query.uid);
-      this.user = user;
+      const singlePhoto = await fetchSinglePhoto(photoId)
+      this.photoData = singlePhoto
+      const user = await fetchUser(this.$route.query.uid)
+      this.user = user
     } catch (e) {
-      this.error = true;
-      this.$error(messages[e.error_code] || "Ошибка(");
+      this.error = true
+      this.$error(messages[e.error_code] || 'Ошибка(')
     }
-    setBodyStyles();
-    this.loading = false;
+    setBodyStyles()
+    this.loading = false
   },
 
   beforeDestroy() {
-    restoreBodyStyles();
-  },
-};
+    restoreBodyStyles()
+  }
+}
 </script>
 
 <style scoped>

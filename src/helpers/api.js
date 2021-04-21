@@ -7,14 +7,14 @@ export function fetchLoginStatus() {
 }
 
 export function logout() {
-  return new Promise((resolve, reject) => {
-    VK.Auth.logout((r) => {
-      if (r) {
-        resolve()
+  return new Promise((resolve) => {
+    VK.Auth.logout(
+      (r) => {
+        if (r) {
+          resolve()
+        }
       }
-      console.log('logout', r);
-    });
-    reject(e)
+    );
   })
 }
 
@@ -22,7 +22,11 @@ export function login() {
   return new Promise((resolve, reject) => {
     VK.Auth.login(r => {
       console.log('login', r);
-      resolve(r)
+      if (!r.session) {
+        reject(r)
+      } else {
+        resolve(r)
+      }
     }, 8192 + 2)
   })
 }

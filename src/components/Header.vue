@@ -20,7 +20,7 @@
 </template>
 
 <script>
-import { logout } from "../helpers/api";
+import { logout, fetchLoginStatus } from "../helpers/api";
 
 export default {
   data() {
@@ -29,16 +29,28 @@ export default {
   methods: {
     async vklogout() {
       try {
-        await logout();
-        this.$message("Вы вышли из приложения");
+        const status = await fetchLoginStatus();
+        if (status === "connected") {
+          await logout();
+          this.$message("Вы вышли из приложения");
+        } else {
+          this.$message("Вы уже вышли из приложения");
+        }
       } catch (e) {
-        this.$message("Вы уже вышли)");
+        this.$error("Ошибка(");
       }
       this.canLogout = false;
       if (this.$route.name !== "Auth") {
         this.$router.push({ name: "Auth" });
       }
     },
+    // async getLoginStatus() {
+    //   try {
+    //     await fetchLoginStatus();
+    //   } catch (e) {
+    //     console.log(e);
+    //   }
+    // },
     // logout() {
     //   VK.Auth.logout((r) => {
     //     console.log(r);

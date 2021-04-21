@@ -24,14 +24,9 @@ export default {
         this.$message("Вы успешно авторизировались");
         this.$router.push({ name: "Home" });
       } catch (e) {
-        console.log("error", e);
+        this.$error("Ошибка(");
       }
     },
-    // login() {
-    //   VK.Auth.login(r => {
-    //     console.log(r)
-    //   }, 8192 + 2)
-    // },
     status() {
       VK.Auth.getLoginStatus((r) => {
         console.log(r.status);
