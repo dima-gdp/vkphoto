@@ -6,7 +6,7 @@ export function fetchLoginStatus() {
   })
 }
 
-export function logout() {
+export function logoutVk() {
   return new Promise((resolve) => {
     VK.Auth.logout(
       (r) => {
@@ -18,10 +18,9 @@ export function logout() {
   })
 }
 
-export function login() {
+export function loginVk() {
   return new Promise((resolve, reject) => {
     VK.Auth.login(r => {
-      console.log('login', r);
       if (!r.session) {
         reject(r)
       } else {
@@ -86,7 +85,6 @@ export function fetchSinglePhoto(photoId) {
         v: '5.73'
       },
       r => {
-        console.log(r)
         if (r.response) {
           resolve(r.response[0])
         } else {

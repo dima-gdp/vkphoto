@@ -18,7 +18,7 @@ const routes = [
         meta: {
           auth: true
         },
-        component: () => import('@/views/SinglePost.vue')
+        component: () => import('@/views/SinglePhoto.vue')
       }
     ]
   },

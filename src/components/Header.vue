@@ -1,9 +1,11 @@
 <template>
   <div class="header">
     <div class="header__container container">
-      <a href="#" class="header__logo">
-        <img src="logo" alt="logo" />
-      </a>
+      <router-link :to="{ name: 'Home' }" href="#" class="header__logo">
+        <svg>
+          <use xlink:href="#logo"></use>
+        </svg>
+      </router-link>
       <nav class="header__nav">
         <ul>
           <li>
@@ -14,24 +16,24 @@
           </li>
         </ul>
       </nav>
-      <button class="header__logout" @click="vklogout">Выйти</button>
+      <button class="header__logout" @click="logout">Выйти</button>
     </div>
   </div>
 </template>
 
 <script>
-import { logout, fetchLoginStatus } from "../helpers/api";
+import { logoutVk, fetchLoginStatus } from "../helpers/api";
 
 export default {
   data() {
     return {};
   },
   methods: {
-    async vklogout() {
+    async logout() {
       try {
         const status = await fetchLoginStatus();
         if (status === "connected") {
-          await logout();
+          await logoutVk();
           this.$message("Вы вышли из приложения");
         } else {
           this.$message("Вы уже вышли из приложения");
@@ -44,21 +46,6 @@ export default {
         this.$router.push({ name: "Auth" });
       }
     },
-    // async getLoginStatus() {
-    //   try {
-    //     await fetchLoginStatus();
-    //   } catch (e) {
-    //     console.log(e);
-    //   }
-    // },
-    // logout() {
-    //   VK.Auth.logout((r) => {
-    //     console.log(r);
-    //     if (this.$route.name !== "Auth") {
-    //       this.$router.push({ name: "Auth" });
-    //     }
-    //   });
-    // },
   },
 };
 </script>

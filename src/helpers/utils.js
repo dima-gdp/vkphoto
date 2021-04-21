@@ -1,9 +1,5 @@
 export function getFullName(firstName, lastname) {
-  if (!firstName || !lastname) {
-    return `${firstName || lastname}`
-  } else {
     return `${firstName} ${lastname}`
-  }
 }
 
 export function debounce(f, ms) {

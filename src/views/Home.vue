@@ -1,12 +1,13 @@
 <template>
   <div class="home">
+    <h1 class="visually-hidden">Лента фотографий</h1>
     <section class="newsfeed">
       <div class="newsfeed__container container">
         <Loader v-if="loading" />
-        <ul class="photos-grid" v-if="getFilteredPhotosData.length">
+        <ul class="photos-grid" v-if="filteredPhotosData.length">
           <li
             class="photos-grid__column"
-            v-for="photo in getFilteredPhotosData"
+            v-for="photo in filteredPhotosData"
             :key="photo.id"
           >
             <router-link
@@ -19,39 +20,16 @@
               <img :src="photo.photo_604" alt="" class="photos-item__image" />
               <div class="photos-item__descr descr-photos">
                 <div class="descr-photos__top">
-                  <div class="descr-photos__likes likes">
-                    <button
-                      @click.prevent="like(photo.id)"
-                      @onlike="like(photo.id)"
-                      class="likes__btn"
-                      :class="{
-                        'likes__btn--red': photo.likes.user_likes,
-                      }"
-                    >
-                      <svg>
-                        <use xlink:href="#like"></use>
-                      </svg>
-                    </button>
-                  </div>
+                  <Like class="descr-photos__likes" :active="photo.likes.user_likes" />
                 </div>
                 <div class="descr-photos__bottom">
-                  <div class="descr-photos__owner owner">
-                    <div class="owner__ava">
-                      <img
-                        :src="photo.user_photo_50"
-                        :alt="photo.user_full_name"
-                      />
-                    </div>
-                    <span class="owner__name owner__name--white">{{
-                      photo.user_full_name
-                    }}</span>
-                  </div>
+                  <User :photo="photo.user_photo_50" :name="photo.user_full_name" colorClass="owner__name--white" class="descr-photos__owner"/>
                 </div>
               </div>
             </router-link>
           </li>
         </ul>
-        <button @click="getNextPhotos" v-if="canLoadPhotos">More</button>
+        <button @click="getNextPhotos" v-if="canLoadPhotos && !error">More</button>
         <Loader v-if="moreLoading" />
       </div>
     </section>
@@ -69,23 +47,23 @@ import {
 } from '../helpers/loadMorePhotos'
 import messages from '../helpers/messages'
 import { mapGetters } from 'vuex'
+import User from '../components/User'
+import Like from '../components/Like'
 
 export default {
-  components: { Loader },
+  components: { Like, User, Loader },
   data() {
     return {
       loading: false,
-      moreLoading: false
+      moreLoading: false,
+      error: false
     }
   },
   computed: {
-    ...mapGetters(['getPhotosData', 'getFilteredPhotosData', 'canLoadPhotos']),
-    filteredPhotos() {
-      return this.fData
-    }
+    ...mapGetters(['photosData', 'filteredPhotosData', 'canLoadPhotos']),
   },
   watch: {
-    getPhotosData(data) {
+    photosData(data) {
       let returnedArray = []
       data.items
         .map(el => el.photos.items)
@@ -109,9 +87,6 @@ export default {
     }
   },
   methods: {
-    like(id) {
-      this.$store.commit('setLike', id)
-    },
     async getNextPhotos() {
       this.moreLoading = true
 
@@ -126,7 +101,9 @@ export default {
           this.$store.state.start_from
         )
       } catch (e) {
+        this.error = true
         this.$error(messages[e.error_code] || 'Ошибка(')
+        unsubscribeToLoadPhotos()
       }
       this.moreLoading = false
     }
@@ -138,6 +115,8 @@ export default {
       subscribeToLoadPhotos(this.getNextPhotos, 300, 300)
     } catch (e) {
       this.$error(messages[e.error_code] || 'Ошибка(')
+      this.error = true
+      unsubscribeToLoadPhotos()
     }
     this.loading = false
   },

@@ -6,34 +6,20 @@
       v-if="!loading"
       @click.self="goToNewsfeed"
     >
-      <div class="single-photo__error" v-if="error">Ошибка</div>
-      <div class="single-photo__content" v-if="photoData && user">
-        <div class="single-photo__image">
-          <img :src="photoData.photo_807 || photoData.photo_604" alt="" />
-        </div>
-        <div class="single-photo__bot" v-if="user">
-          <div class="single-photo__owner owner">
-            <div class="owner__ava">
-              <img :src="user.photo_50" alt="" />
-            </div>
-            <span class="owner__name">{{ userFullName }}</span>
+      <div class="single-photo__error" v-if="error">Упс, ошибка</div>
+      <template v-if="photoData && user">
+        <div class="single-photo__content">
+          <div class="single-photo__image">
+            <img :src="photoData.photo_807 || photoData.photo_604" alt="" />
           </div>
-          <div class="single-photo__likes likes">
-            <span class="likes__count">{{ photoData.likes.count }}</span>
-            <button
-              @click="like(photoData.id)"
-              class="likes__btn"
-              :class="{
-                'likes__btn--red': photoData.likes.user_likes,
-              }"
-            >
-              <svg>
-                <use xlink:href="#like"></use>
-              </svg>
-            </button>
+          <div class="single-photo__bot" v-if="user">
+            <User :photo="user.photo_50" :name="userFullName" class="single-photo__owner"/>
+            <Like class="single-photo__likes" :active="photoData.likes.user_likes">
+              <span class="likes__count">{{ photoData.likes.count }}</span>
+            </Like>
           </div>
         </div>
-      </div>
+      </template>
       <button class="single-photo__close-btn" @click="goToNewsfeed">
         <svg>
           <use xlink:href="#close"></use>
@@ -44,13 +30,15 @@
 </template>
 
 <script>
-import { mapGetters, mapMutations } from 'vuex'
 import { getFullName } from '../helpers/utils'
 import { setBodyStyles, restoreBodyStyles } from '../helpers/body.styles'
 import { fetchSinglePhoto, fetchUser } from '../helpers/api'
 import messages from '../helpers/messages'
+import User from '../components/User'
+import Like from '../components/Like'
 
 export default {
+  components: { Like, User },
   data() {
     return {
       loading: false,
@@ -65,23 +53,18 @@ export default {
     }
   },
   methods: {
-    ...mapMutations(['setBodyOffsetTop']),
     goToNewsfeed() {
       this.$router.push({ name: 'Home' })
     },
-    like(id) {
-      this.photoData.likes.user_likes = !this.photoData.likes.user_likes
-      this.$store.commit('setLike', id)
-    }
   },
   async created() {
     this.loading = true
     const uid = this.$route.query.uid
     const pid = this.$route.query.pid
-    if (!uid && !pid) {
+    if (!uid || !pid) {
       this.loading = false
       this.error = true
-      this.$error('Неправильная ссылка')
+      this.$error('Неккоркетная ссылка')
       return
     }
 
@@ -105,5 +88,3 @@ export default {
 }
 </script>
 
-<style scoped>
-</style>

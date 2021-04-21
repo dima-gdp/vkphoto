@@ -1,7 +1,6 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 import { fetchInitialPhotos, fetchMorePhotos } from '../helpers/api'
-import messages from '../helpers/messages'
 
 Vue.use(Vuex)
 
@@ -14,7 +13,6 @@ export default new Vuex.Store({
     filteredPhotosData: [],
     start_from: null,
     canLoadPhotos: true,
-
   },
   mutations: {
     setPhotosData(state, { photosData, start_from }) {
@@ -27,10 +25,6 @@ export default new Vuex.Store({
     setFilteredPhotosData(state, filteredData) {
       state.filteredPhotosData = filteredData
     },
-    setLike(state, id) {
-      const photo = state.filteredPhotosData.find((el) => el.id === id);
-      photo.likes.user_likes = !photo.likes.user_likes;
-    }
   },
   actions: {
     async getInitialPhotos({ commit }) {
@@ -67,10 +61,8 @@ export default new Vuex.Store({
     },
   },
   getters: {
-    getPhotosData: state => state.photosData,
-    getFilteredPhotosData: state => state.filteredPhotosData,
+    photosData: state => state.photosData,
+    filteredPhotosData: state => state.filteredPhotosData,
     canLoadPhotos: state => state.canLoadPhotos,
   },
-  modules: {
-  }
 })
