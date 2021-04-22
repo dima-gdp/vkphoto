@@ -8,11 +8,11 @@ export default new Vuex.Store({
   state: {
     photosData: {
       items: [],
-      profiles: [],
+      profiles: []
     },
     filteredPhotosData: [],
     start_from: null,
-    canLoadPhotos: true,
+    canLoadPhotos: true
   },
   mutations: {
     setPhotosData(state, { photosData, start_from }) {
@@ -24,12 +24,12 @@ export default new Vuex.Store({
     },
     setFilteredPhotosData(state, filteredData) {
       state.filteredPhotosData = filteredData
-    },
+    }
   },
   actions: {
     async getInitialPhotos({ commit }) {
       try {
-        const initialPhotos = await fetchInitialPhotos();
+        const initialPhotos = await fetchInitialPhotos()
         commit('setPhotosData', {
           photosData: initialPhotos,
           start_from: initialPhotos.next_from
@@ -40,29 +40,28 @@ export default new Vuex.Store({
     },
     async getNextPhotos({ commit, state }) {
       try {
-        const morePhotos = await fetchMorePhotos(state.start_from);
+        const morePhotos = await fetchMorePhotos(state.start_from)
         if (!morePhotos.next_from || morePhotos.next_from === state.start_from) {
           commit('setCanLoadPhotos', false)
-          // this.$message("Лента фотографий закончилась");
-          return;
+          return
         }
         commit('setPhotosData', {
           photosData: {
             items: [...state.photosData.items, ...morePhotos.items],
-            profiles: [...state.photosData.profiles, ...morePhotos.profiles],
+            profiles: [...state.photosData.profiles, ...morePhotos.profiles]
           },
           start_from: morePhotos.next_from
         })
-        this.start_from = morePhotos.next_from;
+        this.start_from = morePhotos.next_from
       } catch (e) {
-        this.canLoadPhotos = false;
+        this.canLoadPhotos = false
         throw e
       }
-    },
+    }
   },
   getters: {
     photosData: state => state.photosData,
     filteredPhotosData: state => state.filteredPhotosData,
-    canLoadPhotos: state => state.canLoadPhotos,
-  },
+    canLoadPhotos: state => state.canLoadPhotos
+  }
 })

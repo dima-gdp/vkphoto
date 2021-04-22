@@ -42,10 +42,9 @@ body {
 	align-items: center;
 	// .likes__count
 	&__count {
-		margin-right: 10px;
+		margin-right: 5px;
 		@media (max-width: 768px) {
 			font-size: 16px;
-			margin-right: 5px;
 		}
 	}
 	// .likes__btn
@@ -100,5 +99,33 @@ body {
 		&--white {
 			color: #fff;
 		}
+	}
+}
+
+[data-aos="build"] {
+	&.aos-animate {
+		.photos-item {
+			&::before {
+				transform: translateY(-100%);
+			}
+			&::after {
+				transform: translateY(100%);
+			}
+		}
+	}
+
+	// @media screen and (min-width: 768px) {
+	//   transform: translateX(100px);
+
+	//   &.aos-animate {
+	//     transform: translateX(0);
+	//   }
+	// }
+}
+
+[data-aos] {
+	body[data-aos-easing="new-easing"] &,
+	&[data-aos][data-aos-easing="new-easing"] {
+		transition-timing-function: cubic-bezier(0.77, 0, 0.175, 1);
 	}
 }

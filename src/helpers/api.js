@@ -38,8 +38,8 @@ export function fetchInitialPhotos() {
         filters: 'photo, wall_photo',
         v: '5.73',
         source_ids: 'friends',
-        max_photos: 10,
-        count: 3
+        max_photos: 6,
+        count: 15
       },
       r => {
         if (r.response) {
@@ -61,8 +61,8 @@ export function fetchMorePhotos(start) {
         v: '5.73',
         source_ids: 'friends',
         start_from: start,
-        max_photos: 10,
-        count: 3
+        max_photos: 6,
+        count: 15
       },
       r => {
         if (r.response) {

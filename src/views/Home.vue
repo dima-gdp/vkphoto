@@ -9,6 +9,9 @@
             class="photos-grid__column"
             v-for="photo in filteredPhotosData"
             :key="photo.id"
+            data-aos="build"
+            data-aos-duration="1100"
+            data-aos-easing="new-easing"
           >
             <router-link
               class="photos-grid__item photos-item"
@@ -17,7 +20,11 @@
                 query: { uid: photo.owner_id, pid: photo.id },
               }"
             >
-              <img :src="photo.photo_604" alt="" class="photos-item__image" />
+              <img
+                :src="photo.photo_807 || photo.photo_604"
+                alt=""
+                class="photos-item__image"
+              />
               <div class="photos-item__descr descr-photos">
                 <div class="descr-photos__top">
                   <Like
@@ -53,7 +60,6 @@
 
 <script>
 import { getFullName } from '../helpers/utils'
-import { fetchInitialPhotos, fetchMorePhotos } from '../helpers/api'
 import Loader from '../components/Loader.vue'
 import {
   subscribeToLoadPhotos,
@@ -63,6 +69,8 @@ import messages from '../helpers/messages'
 import { mapGetters } from 'vuex'
 import User from '../components/User'
 import Like from '../components/Like'
+import AOS from 'aos'
+import 'aos/dist/aos.css'
 
 export default {
   components: { Like, User, Loader },
@@ -124,6 +132,12 @@ export default {
   },
   async mounted() {
     this.loading = true
+    AOS.init({
+      disable: function() {
+        let maxWidth = 992
+        return window.innerWidth < maxWidth
+      }
+    })
     try {
       await this.$store.dispatch('getInitialPhotos')
       subscribeToLoadPhotos(this.getNextPhotos, 300, 300)
@@ -136,6 +150,7 @@ export default {
   },
   beforeDestroy() {
     unsubscribeToLoadPhotos()
+    AOS.destroy()
   }
 }
 </script>
