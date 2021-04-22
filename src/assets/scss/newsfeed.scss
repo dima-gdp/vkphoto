@@ -7,14 +7,46 @@
 	.lds-ring {
 		margin: 0 auto;
 	}
+	&__btn {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		text-align: center;
+		padding: 10px 15px;
+		margin: 0 auto;
+		background-color: $violet;
+		color: #fff;
+		background-color: 10px;
+	}
 }
 
 .photos-grid {
 	column-count: 3;
 	column-gap: 50px;
+	margin-bottom: 40px;
+	@media (max-width: 1440px) {
+		@include adaptiv(column-gap, 40, 20, 1440, 769);
+	}
+	@media (max-width: 768px) {
+		column-count: 2;
+		column-gap: 30px;
+	}
+	@media (max-width: 576px) {
+		column-gap: 20px;
+	}
+	@media (max-width: 420px) {
+		column-count: 1;
+	}
+
 	// .photos-grid__column
 	&__column {
 		margin-bottom: 40px;
+		@media (max-width: 993px) {
+			margin-bottom: 30px;
+		}
+		@media (max-width: 576px) {
+			margin-bottom: 20px;
+		}
 	}
 	// .photos-grid__item
 	&__item {

@@ -1,5 +1,6 @@
-$font-family: "Arial", sans-serif;
+$font-family: "Gilroy", sans-serif;
 $minwidth: 320px;
+$violet: #7741cc;
 
 @function vw($value, $base: 1920) {
 	@return $value / $base * 100vw;

@@ -9,6 +9,7 @@
 	}
 	// .header__logo
 	&__logo {
+		margin-right: 20px;
 		svg {
 			width: 40px;
 			height: 40px;
@@ -18,6 +19,9 @@
 	&__nav {
 		margin-right: 40px;
 		margin-left: auto;
+		@media (max-width: 576px) {
+			margin-right: 20px;
+		}
 		ul {
 			display: flex;
 			align-items: center;
@@ -27,8 +31,11 @@
 				}
 				a {
 					color: #000;
+					@media (max-width: 420px) {
+						font-size: 16px;
+					}
 					&.router-link-exact-active {
-						color: blueviolet;
+						color: #8a50e6;
 					}
 				}
 			}
@@ -36,5 +43,16 @@
 	}
 	// .header__logout
 	&__logout {
+		padding: 10px 15px;
+		background-color: $violet;
+		border-radius: 10px;
+		color: #fff;
+		font-size: 15px;
+		font-weight: 700;
+		text-transform: uppercase;
+		@media (max-width: 576px) {
+			font-size: 12px;
+			padding: 9px 12px;
+		}
 	}
 }

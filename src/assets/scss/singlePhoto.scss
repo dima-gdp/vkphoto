@@ -27,13 +27,24 @@
 		flex-direction: column;
 		justify-content: center;
 		align-items: center;
+		@media (max-width: 1200px) {
+			padding-left: 50px;
+			padding-right: 50px;
+		}
+		@media (max-width: 576px) {
+			padding-right: 0;
+			padding-left: 0;
+		}
 	}
 	&__content {
-		padding: 20px;
+		padding: 30px;
 		background-color: #fff;
 		border-radius: 10px;
 		display: flex;
 		flex-direction: column;
+		@media (max-width: 768px) {
+			padding: 20px;
+		}
 	}
 	&__error {
 		display: flex;
@@ -51,18 +62,44 @@
 		position: relative;
 		img {
 			max-height: calc(100vh - 200px);
+			@media (max-height: 650px) {
+				max-height: none;
+			}
+			@media (max-width: 576px) {
+				max-height: none;
+			}
 		}
 	}
 	// .single-photo__bot
 	&__bot {
+		margin-top: 15px;
 		display: flex;
 		justify-content: space-between;
 	}
 	// .single-photo__owner
 	&__owner {
+		margin-right: 40px;
+		@media (max-width: 576px) {
+			.owner__ava {
+				flex: 0 0 30px;
+				height: 30px;
+				width: 30px;
+			}
+		}
 	}
 	// .single-photo__likes
 	&__likes {
+		.likes__btn {
+			background-color: transparent;
+			@media (max-width: 768px) {
+				width: 30px;
+				height: 30px;
+				svg {
+					width: 15px;
+					height: 15px;
+				}
+			}
+		}
 	}
 	&__close-btn {
 		position: absolute;

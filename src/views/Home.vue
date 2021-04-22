@@ -20,16 +20,30 @@
               <img :src="photo.photo_604" alt="" class="photos-item__image" />
               <div class="photos-item__descr descr-photos">
                 <div class="descr-photos__top">
-                  <Like class="descr-photos__likes" :active="photo.likes.user_likes" />
+                  <Like
+                    class="descr-photos__likes"
+                    :active="photo.likes.user_likes"
+                  />
                 </div>
                 <div class="descr-photos__bottom">
-                  <User :photo="photo.user_photo_50" :name="photo.user_full_name" colorClass="owner__name--white" class="descr-photos__owner"/>
+                  <User
+                    :photo="photo.user_photo_50"
+                    :name="photo.user_full_name"
+                    colorClass="owner__name--white"
+                    class="descr-photos__owner"
+                  />
                 </div>
               </div>
             </router-link>
           </li>
         </ul>
-        <button @click="getNextPhotos" v-if="canLoadPhotos && !error">More</button>
+        <button
+          @click="getNextPhotos"
+          v-if="canLoadPhotos && !error"
+          class="newsfeed__btn"
+        >
+          Загрузить еще
+        </button>
         <Loader v-if="moreLoading" />
       </div>
     </section>
@@ -60,7 +74,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['photosData', 'filteredPhotosData', 'canLoadPhotos']),
+    ...mapGetters(['photosData', 'filteredPhotosData', 'canLoadPhotos'])
   },
   watch: {
     photosData(data) {
