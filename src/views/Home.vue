@@ -136,7 +136,8 @@ export default {
       disable: function() {
         let maxWidth = 992
         return window.innerWidth < maxWidth
-      }
+      },
+      once: true
     })
     try {
       await this.$store.dispatch('getInitialPhotos')
@@ -151,6 +152,6 @@ export default {
   beforeDestroy() {
     unsubscribeToLoadPhotos()
     AOS.destroy()
-  }
+  },
 }
 </script>
