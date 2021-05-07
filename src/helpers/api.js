@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 export function fetchLoginStatus() {
   return new Promise((resolve) => {
     VK.Auth.getLoginStatus((r) => {
@@ -14,7 +15,7 @@ export function logoutVk() {
           resolve()
         }
       }
-    );
+    )
   })
 }
 

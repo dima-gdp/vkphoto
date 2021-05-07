@@ -134,7 +134,7 @@ export default {
     this.loading = true
     AOS.init({
       disable: function() {
-        let maxWidth = 992
+        const maxWidth = 992
         return window.innerWidth < maxWidth
       },
       once: true
@@ -151,7 +151,6 @@ export default {
   },
   beforeDestroy() {
     unsubscribeToLoadPhotos()
-    AOS.destroy()
-  },
+  }
 }
 </script>

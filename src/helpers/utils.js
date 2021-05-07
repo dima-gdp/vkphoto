@@ -1,17 +1,17 @@
 export function getFullName(firstName, lastname) {
-    return `${firstName} ${lastname}`
+  return `${firstName} ${lastname}`
 }
 
 export function debounce(f, ms) {
-  let isCooldown = false;
+  let isCooldown = false
 
-  return function(...args) {
-    if (isCooldown) return;
+  return function (...args) {
+    if (isCooldown) return
 
-    f.apply(this, args);
+    f.apply(this, args)
 
-    isCooldown = true;
+    isCooldown = true
 
-    setTimeout(() => isCooldown = false, ms);
-  };
+    setTimeout(() => { isCooldown = false }, ms)
+  }
 }

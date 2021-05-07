@@ -1,7 +1,7 @@
 let bodyOffsetTop
 
 export const setBodyStyles = () => {
-  let paddingOffset = window.innerWidth - document.body.offsetWidth + 'px'
+  const paddingOffset = window.innerWidth - document.body.offsetWidth + 'px'
   document.body.style.paddingRight = paddingOffset
   bodyOffsetTop = window.scrollY
   document.body.classList.add('disable-scroll')

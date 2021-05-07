@@ -20,7 +20,7 @@ export default {
   methods: {
     async login() {
       try {
-        const auth = await loginVk()
+        await loginVk()
         this.$message('Вы успешно авторизировались')
         this.$router.push({ name: 'Home' })
       } catch (e) {

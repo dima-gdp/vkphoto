@@ -13,8 +13,15 @@
             <img :src="photoData.photo_807 || photoData.photo_604" alt="" />
           </div>
           <div class="single-photo__bot" v-if="user">
-            <User :photo="user.photo_50" :name="userFullName" class="single-photo__owner"/>
-            <Like class="single-photo__likes" :active="photoData.likes.user_likes">
+            <User
+              :photo="user.photo_50"
+              :name="userFullName"
+              class="single-photo__owner"
+            />
+            <Like
+              class="single-photo__likes"
+              :active="photoData.likes.user_likes"
+            >
               <span class="likes__count">{{ photoData.likes.count }}</span>
             </Like>
           </div>
@@ -55,7 +62,7 @@ export default {
   methods: {
     goToNewsfeed() {
       this.$router.push({ name: 'Home' })
-    },
+    }
   },
   async created() {
     this.loading = true
@@ -87,4 +94,3 @@ export default {
   }
 }
 </script>
-

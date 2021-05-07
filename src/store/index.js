@@ -28,15 +28,11 @@ export default new Vuex.Store({
   },
   actions: {
     async getInitialPhotos({ commit }) {
-      try {
-        const initialPhotos = await fetchInitialPhotos()
-        commit('setPhotosData', {
-          photosData: initialPhotos,
-          start_from: initialPhotos.next_from
-        })
-      } catch (e) {
-        throw e
-      }
+      const initialPhotos = await fetchInitialPhotos()
+      commit('setPhotosData', {
+        photosData: initialPhotos,
+        start_from: initialPhotos.next_from
+      })
     },
     async getNextPhotos({ commit, state }) {
       try {
