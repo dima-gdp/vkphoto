@@ -122,12 +122,13 @@ export default {
           'getNextPhotos',
           this.$store.state.start_from
         )
+        this.moreLoading = false
       } catch (e) {
         this.error = true
         this.$error(messages[e.error_code] || 'Ошибка(')
         unsubscribeToLoadPhotos()
+        this.moreLoading = false
       }
-      this.moreLoading = false
     }
   },
   async mounted() {
@@ -142,12 +143,13 @@ export default {
     try {
       await this.$store.dispatch('getInitialPhotos')
       subscribeToLoadPhotos(this.getNextPhotos, 300, 300)
+      this.loading = false
     } catch (e) {
       this.$error(messages[e.error_code] || 'Ошибка(')
       this.error = true
       unsubscribeToLoadPhotos()
+      this.loading = false
     }
-    this.loading = false
   },
   beforeDestroy() {
     unsubscribeToLoadPhotos()

@@ -81,14 +81,14 @@ export default {
       this.photoData = singlePhoto
       const user = await fetchUser(this.$route.query.uid)
       this.user = user
+      this.loading = false
     } catch (e) {
       this.error = true
       this.$error(messages[e.error_code] || 'Ошибка(')
+      this.loading = false
     }
     setBodyStyles()
-    this.loading = false
   },
-
   beforeDestroy() {
     restoreBodyStyles()
   }
